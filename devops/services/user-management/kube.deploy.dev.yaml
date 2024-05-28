@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-poc-dev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-django-app-deployment
+  labels:
+    app: django-app
+  namespace: kube-poc-dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: django-app
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      containers:
+        - name: django-app-container
+          image: trajendra/django-todo:latest
+          ports:
+            - containerPort: 8000

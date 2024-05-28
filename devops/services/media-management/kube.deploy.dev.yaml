@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-poc-dev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-management-deployment
+  labels:
+    app: media-management
+  namespace: kube-poc-dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: media-management
+  template:
+    metadata:
+      labels:
+        app: media-management
+    spec:
+      containers:
+      - name: media-management-container
+        resources:
+          limits:
+            cpu: 2
+            memory: 1024
+        image: 127.0.0.1:5555/media-management:latest
+        ports:
+        - containerPort: 5100
+      automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-management-service
+  labels:
+    app: media-management
+  namespace: kube-poc-dev
+spec:
+  type: NodePort
+  selector:
+    app: media-management
+  ports:
+  - port: 80
+    targetPort: 5100
+    nodePort: 30001
