@@ -55,7 +55,7 @@ deploy_service() {
     REGISTRY_URL="127.0.0.1:5555"
     LAST_COMMIT_ID="$(get_last_commit_hash)"
 
-    docker build -t "$1-dev" --build-arg SERVICE_NAME=$1 --platform linux/amd64 -f Dockerfile services/$1
+    docker build -t "$1-dev" --platform linux/amd64 services/$1
     docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:latest"
     docker push "$REGISTRY_URL/$1-dev:latest"
     docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
