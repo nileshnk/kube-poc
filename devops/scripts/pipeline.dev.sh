@@ -2,6 +2,7 @@
 
 # Variables initialization
 services_list=("user-management" "media-management")
+REGISTRY_URL="127.0.0.1:5555"
 
 # Function to get the last commit hash
 get_last_commit_hash() {
@@ -18,8 +19,8 @@ get_folder_hash() {
     local folder_hash=0
     for file in $(find "$1" -type f); do
         # MacOS compatible format specifiers are "%z %m". For Linux compatibility use "%s %Y"
-        local file_stat=($(stat --format "%s %Y" "$file"))
-        # local file_stat=($(stat -f "%z %m" "$file"))
+        # local file_stat=($(stat --format "%s %Y" "$file"))
+        local file_stat=($(stat -f "%z %m" "$file"))
         local file_size="${file_stat[0]}"
         local file_mtime="${file_stat[1]}"
         local file_identifier="$((file_size ^ file_mtime))"
@@ -47,19 +48,29 @@ test_service() {
     echo $1
 }
 
+push_new_lts() {
+    docker image rm "$REGISTRY_URL/$1-$2:latest"
+    docker pull "$REGISTRY_URL/$1-$2:latest"
+    docker tag "$REGISTRY_URL/$1-$2:latest" "$REGISTRY_URL/$1-$2:lts"
+    docker push "$REGISTRY_URL/$1-$2:lts"
+}
+
 deploy_service() {
     echo -e "\nDeploying $1..."
 
+    # push new LTS
+    push_new_lts $1 "dev"
+
     ls -la services/$1
 
-    REGISTRY_URL="127.0.0.1:5555"
     LAST_COMMIT_ID="$(get_last_commit_hash)"
 
     docker build -t "$1-dev" --platform linux/amd64 services/$1
     docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:latest"
     docker push "$REGISTRY_URL/$1-dev:latest"
-    docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
-    docker push "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
+    # Not required in this POC, but can be helpful in future
+    # docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
+    # docker push "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
 
 }
 
