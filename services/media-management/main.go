@@ -95,7 +95,7 @@ func main() {
 	})
 
 	addr := &net.TCPAddr{
-		IP:   net.ParseIP("127.0.0.1"),
+		IP:   net.ParseIP("0.0.0.0"),
 		Port: 5100,
 	}
 	err := http.ListenAndServe(addr.String(), nil)

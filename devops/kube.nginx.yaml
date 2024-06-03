@@ -1,48 +1,43 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kube-poc-dev
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: media-management-deployment
+  name: nginx-dep
   labels:
-    app: media-management
+    app: nginx
   namespace: kube-poc-dev
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: media-management
+      app: nginx
   template:
     metadata:
       labels:
-        app: media-management
+        app: nginx
     spec:
       containers:
-      - name: media-management-container
+      - name: nginx-container
         resources:
           #          limits:
           #            cpu: 2
           #            memory: 1024
-        image: 127.0.0.1:5555/media-management:latest
+        image: 127.0.0.1:5555/nginx:latest
         ports:
-        - containerPort: 5100
+        - containerPort: 80
       # automountServiceAccountToken: false
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: media-management-service
+  name: nginx-service
   labels:
-    app: media-management
+    app: nginx
   namespace: kube-poc-dev
 spec:
   type: ClusterIP
   selector:
-    app: media-management
+    app: nginx
   ports:
-  - port: 5100
-    targetPort: 5100
+  - port: 80
+    # targetPort: 80
     # nodePort: 30002

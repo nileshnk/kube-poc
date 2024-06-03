@@ -23,6 +23,6 @@ RUN npm install --only=production
 
 COPY --from=base /usr/src/app/dist ./
 
-EXPOSE 3000
+EXPOSE 5101
 
-ENTRYPOINT ["node","./app.js"]
+ENTRYPOINT ["node","./index.js"]

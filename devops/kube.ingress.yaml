@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kube-poc-dev-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  namespace: kube-poc-dev
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /media/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: media-management-service
+            port:
+              number: 5100
+      - path: /user/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: user-management-service
+            port:
+              number: 5101
+      - path: /nginx/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80

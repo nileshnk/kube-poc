@@ -6,22 +6,38 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-django-app-deployment
+  name: user-management-deployment
   labels:
-    app: django-app
+    app: user-management
   namespace: kube-poc-dev
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: django-app
+      app: user-management
   template:
     metadata:
       labels:
-        app: django-app
+        app: user-management
     spec:
       containers:
-        - name: django-app-container
-          image: trajendra/django-todo:latest
+        - name: user-management-container
+          image: 127.0.0.1:5555/user-management:latest
           ports:
-            - containerPort: 8000
+            - containerPort: 5101
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-management-service
+  labels:
+    app: user-management
+  namespace: kube-poc-dev
+spec:
+  type: ClusterIP
+  selector:
+    app: user-management
+  ports:
+  - port: 5101
+    targetPort: 5101
+    # nodePort: 30002
