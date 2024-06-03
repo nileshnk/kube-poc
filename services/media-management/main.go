@@ -91,7 +91,7 @@ func main() {
 
 	http.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintln(w, "0.0.2")
+		fmt.Fprintln(w, "0.0.3")
 	})
 
 	addr := &net.TCPAddr{

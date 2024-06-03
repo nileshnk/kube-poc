@@ -70,7 +70,8 @@ deploy_service() {
     docker push "$REGISTRY_URL/$1-dev:latest"
 
     # run deployment
-    kubectl apply -f devops/services/$1/kube.deploy.dev.yaml
+    kubectl rollout restart deployment "$1-deployment"
+    
     # Not required in this POC, but can be helpful in future
     # docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
     # docker push "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
