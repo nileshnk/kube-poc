@@ -68,6 +68,9 @@ deploy_service() {
     docker build -t "$1-dev" --platform linux/amd64 services/$1
     docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:latest"
     docker push "$REGISTRY_URL/$1-dev:latest"
+
+    # run deployment
+    kubectl apply -f devops/services/$1/kube.deploy.dev.yaml
     # Not required in this POC, but can be helpful in future
     # docker tag "$1-dev:latest" "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"
     # docker push "$REGISTRY_URL/$1-dev:$LAST_COMMIT_ID"

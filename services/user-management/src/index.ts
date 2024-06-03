@@ -6,7 +6,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/version", (req: Request, res: Response) => {
-  res.send("1");
+  res.send("2");
 });
 
 const PORT = 5101;
