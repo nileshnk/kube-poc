@@ -19,8 +19,8 @@ get_folder_hash() {
     local folder_hash=0
     for file in $(find "$1" -type f); do
         # MacOS compatible format specifiers are "%z %m". For Linux compatibility use "%s %Y"
-        # local file_stat=($(stat --format "%s %Y" "$file"))
-        local file_stat=($(stat -f "%z %m" "$file"))
+        local file_stat=($(stat --format "%s %Y" "$file"))
+        # local file_stat=($(stat -f "%z %m" "$file"))
         local file_size="${file_stat[0]}"
         local file_mtime="${file_stat[1]}"
         local file_identifier="$((file_size ^ file_mtime))"
